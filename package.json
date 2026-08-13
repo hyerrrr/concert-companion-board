@@ -1,0 +1,13 @@
+{
+  "name": "concert-companion-board",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "check": "node --check api/[...route].js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
