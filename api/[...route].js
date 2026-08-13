@@ -116,12 +116,17 @@ async function rateLimit(req, action, max, windowSeconds) {
 }
 async function requireHuman(req, res, action, max, windowSeconds) {
   const body = parseBody(req);
-  if (!(await rateLimit(req, action, max, windowSeconds))) {
-    fail(res, 429, '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.'); return null;
-  }
+
   if (!(await verifyTurnstile(body.turnstileToken, req))) {
-    fail(res, 400, '보안 인증에 실패했습니다. 새로고침 후 다시 시도해주세요.'); return null;
+    fail(res, 400, '보안 인증에 실패했습니다. 새로고침 후 다시 시도해주세요.');
+    return null;
   }
+
+  if (!(await rateLimit(req, action, max, windowSeconds))) {
+    fail(res, 429, '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+    return null;
+  }
+
   return body;
 }
 function publicPost(row) {
