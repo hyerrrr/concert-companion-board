@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/:apiPath*",
+      "destination": "/api/posts?apiPath=:apiPath*"
+    },
+    {
       "source": "/",
       "destination": "/public/index.html"
     }
