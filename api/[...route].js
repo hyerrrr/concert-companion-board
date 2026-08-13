@@ -20,10 +20,20 @@ function parseBody(req) {
   try { return JSON.parse(req.body); } catch { return {}; }
 }
 function routeParts(req) {
-  const raw = req.query?.route;
-  if (raw) return (Array.isArray(raw) ? raw : String(raw).split('/')).filter(Boolean);
-  const pathname = new URL(req.url || '/', 'http://localhost').pathname;
-  return pathname.replace(/^\/api\/?/, '').split('/').filter(Boolean);
+  const requestUrl = new URL(req.url || '/', 'http://localhost');
+  const raw =
+    req.query?.apiPath ??
+    req.query?.route ??
+    requestUrl.searchParams.get('apiPath');
+
+  if (raw) {
+    return (Array.isArray(raw) ? raw : String(raw).split('/')).filter(Boolean);
+  }
+
+  return requestUrl.pathname
+    .replace(/^\/api\/?/, '')
+    .split('/')
+    .filter(Boolean);
 }
 function method(req, expected) { return req.method === expected; }
 function clean(value, max = 1000) { return String(value ?? '').trim().slice(0, max); }
